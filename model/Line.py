@@ -6,3 +6,6 @@ class Line(object):
 
     def length(self):
         return self.point1.distance_to(pointB=self.point2)
+
+    def to_xy_list(self):
+        return [self.point1.to_xy_list(), self.point2.to_xy_list()]

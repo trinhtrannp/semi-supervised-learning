@@ -7,5 +7,8 @@ class Point(object):
         self.y = y
 
     def distance_to(self, pointB):
-        dis = math.sqrt(math.pow(self.x - pointB.x, 2) - math.pow(self.y - pointB.y, 2))
+        dis = math.sqrt(math.pow(self.x - pointB.x, 2) + math.pow(self.y - pointB.y, 2))
         return dis
+
+    def to_xy_list(self):
+        return [self.x, self.y]
