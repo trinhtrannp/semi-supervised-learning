@@ -1,0 +1,42 @@
+from model.Angle import Angle
+from model.Line import Line
+import math
+
+
+class Triangle(object):
+
+    def __init__(self, point1, point2, point3):
+        self.A = point1
+        self.B = point2
+        self.C = point3
+
+        self.__calculate_edges()
+        self.__calculate_angles()
+        self.__calculate_ratios()
+
+    def __calculate_edges(self):
+        self.AB = Line(self.A, self.B)
+        self.AC = Line(self.A, self.C)
+        self.BC = Line(self.B, self.C)
+
+        # a is length of the edge opposite to point A
+        self.a = self.BC.length()
+
+        # b is length of the edge opposite to point B
+        self.b = self.AB.length()
+
+        # c is length of the edge opposite to point C
+        self.c = self.AB.length()
+
+    def __calculate_angles(self):
+        # alpha is the angle at point A
+        self.alpha = Angle(radian=math.acos((self.b**2+self.c**2-self.a**2)/(2*self.b*self.c)))
+
+        # beta is the angle at to point B
+        self.beta = Angle(radian=math.acos((self.a**2+self.c**2-self.b**2)/(2*self.a*self.c)))
+
+        # gamma is the angle at to point C
+        self.gamma = Angle(radian=math.acos((self.a**2+self.b**2-self.c**2)/(2*self.a*self.b)))
+
+    def __calculate_ratio(self):
+        pass
