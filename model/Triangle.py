@@ -36,9 +36,9 @@ class Triangle(object):
         self.c = self.AB.length()
 
     def __calculate_angles(self):
-        print "alpha = ", math.acos(((self.b ** 2 + self.c ** 2) - self.a ** 2) / (2 * self.b * self.c))
-        print "beta = ", math.acos(((self.a ** 2 + self.c ** 2) - self.b ** 2) / (2 * self.a * self.c))
-        print "gamma = ", math.acos(((self.a ** 2 + self.b ** 2) - self.c ** 2) / (2 * self.a * self.b))
+        # print "alpha = ", math.acos(((self.b ** 2 + self.c ** 2) - self.a ** 2) / (2 * self.b * self.c))
+        # print "beta = ", math.acos(((self.a ** 2 + self.c ** 2) - self.b ** 2) / (2 * self.a * self.c))
+        # print "gamma = ", math.acos(((self.a ** 2 + self.b ** 2) - self.c ** 2) / (2 * self.a * self.b))
         # alpha is the angle at point A
         self.alpha = Angle(radian=math.acos(((self.b ** 2 + self.c ** 2) - self.a ** 2) / (2 * self.b * self.c)))
 
@@ -56,5 +56,5 @@ class Triangle(object):
         self.r2 = max(self.a, self.c) / min(self.a, self.c)
         self.r3 = max(self.b, self.c) / min(self.b, self.c)
 
-    def to_xy_list(self):
+    def to_numpy_array(self):
         return numpy.array([self.A.to_xy_list(), self.B.to_xy_list(), self.C.to_xy_list()])

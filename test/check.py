@@ -16,7 +16,7 @@ def main():
     triangle_list = generator.generate_triangle_list(10)
 
     for triangle in triangle_list:
-        tp = plt.Polygon(xy=triangle.to_xy_list(), color=[random.uniform(0.2, 1), random.uniform(0.2, 1), random.uniform(0.2, 1)])
+        tp = plt.Polygon(xy=triangle.to_numpy_array(), color=[random.uniform(0.2, 1), random.uniform(0.2, 1), random.uniform(0.2, 1)])
         plt.gca().add_patch(tp)
 
     plt.show()
