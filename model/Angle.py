@@ -2,11 +2,15 @@ import math
 
 
 class Angle(object):
+
+    rad = 0
+    deg = 0
+
     def __init__(self, radian=None, degree=None):
-        if not radian and not degree:
+        if radian is None and degree is None:
             raise Exception('input params cannot be all None')
 
-        if radian and degree and not radian == math.radians(degree):
+        if radian is not None and degree is not None and not radian == math.radians(degree):
             raise Exception('input params should match each other')
 
         if radian:
