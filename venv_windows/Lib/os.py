@@ -207,7 +207,7 @@ def renames(old, new):
 __all__.extend(["makedirs", "removedirs", "renames"])
 
 def walk(top, topdown=True, onerror=None, followlinks=False):
-    """Directory tree generator.
+    """Directory tree generators.
 
     For each directory in the directory tree rooted at top (including top
     itself, but excluding '.' and '..'), yields a 3-tuple

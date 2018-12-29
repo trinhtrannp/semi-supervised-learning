@@ -1,8 +1,8 @@
 import itertools
-from Crypto.Random import random
+import random
 
-from model.Point import Point
-from model.Triangle import Triangle
+from models.Point import Point
+from models.Triangle import Triangle
 
 
 class TriangleGenerator(object):
@@ -36,7 +36,6 @@ class TriangleGenerator(object):
                 triangle_list.append(triangle)
 
         return triangle_list
-
 
 
 
