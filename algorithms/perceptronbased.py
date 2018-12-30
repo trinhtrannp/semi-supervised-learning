@@ -35,7 +35,7 @@ class PLAAlgorithm(BaseAlgorithm):
                 if predict_label != true_label:
                     loss += 1
                     self.weight = numpy.add(self.weight, numpy.multiply(feature_vector, true_label))
-                    print "new weight: ", self.weight
+                    #print "new weight: ", self.weight
 
             if loss == expected_loss:
                 break

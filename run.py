@@ -49,7 +49,7 @@ def get_labeled_training_data(tobe_labeled_rhombus, tobe_labeled_normal):
     return labeled_training_data
 
 
-def main(algorithm, rhombus, normal):
+def main(rhombus, normal):
     print "Trying to generate ", rhombus, " rhombus convex..."
     rhombus_convex = generate_rhombus_convex(rhombus, 10000, 1000)
 
@@ -77,31 +77,87 @@ def main(algorithm, rhombus, normal):
     tobe_labeled_normal = training_normal_convex[:len(training_normal_convex) // 3]
     tobe_pseudo_labeled_normal = training_normal_convex[len(training_normal_convex) // 3:]
 
-    """
-    train with labeled data -> this is supervised learning
-    """
-    labeled_training_data = get_labeled_training_data(tobe_labeled_rhombus, tobe_labeled_normal)
-    algorithm.train(classified_feature_list=labeled_training_data)
+    ############################# Supervised Learning #####################################
+
+    algorithm_sp = PLAAlgorithm()
 
     """
-    predict with test data
+    train with all training data -> this is supervised learning
     """
-    loss = 0
+    labeled_training_data = get_labeled_training_data(training_rhombus_convex, training_normal_convex)
+    algorithm_sp.train(classified_feature_list=labeled_training_data)
+
+    """
+    predict with test data -> supervised learning
+    """
+    error = 0
     for convex in test_rhombus_convex:
         feature_vector = numpy.array([convex.r1, convex.r2, convex.r3, 1.0])
-        predicted_label = algorithm.run(feature_vector)
+        predicted_label = algorithm_sp.run(feature_vector)
         if predicted_label == -1:  # it is miss-classified
-            loss += 1
+            error += 1
 
     for convex in test_normal_convex:
         feature_vector = numpy.array([convex.r1, convex.r2, convex.r3, 1.0])
-        predicted_label = algorithm.run(feature_vector)
+        predicted_label = algorithm_sp.run(feature_vector)
         if predicted_label == 1:  # it is miss-classified
-            loss += 1
+            error += 1
 
-    print "loss = ", loss
+    print "error sp = ", error
+
+    ###################################  Semi-supervised Learning  ##########################################
+
+    algorithm_ssp = PLAAlgorithm()
+
+    """
+    train with labeled training data
+    """
+    labeled_training_data = get_labeled_training_data(tobe_labeled_rhombus, tobe_labeled_normal)
+    algorithm_ssp.train(classified_feature_list=labeled_training_data)
+
+    """
+    pseudo-label remaining training data
+    """
+    pseudo_label_error = 0
+    for convex in tobe_pseudo_labeled_rhombus:
+        feature_vector = [convex.r1, convex.r2, convex.r3]
+        predicted_label = algorithm_ssp.run(numpy.append(numpy.array(feature_vector), 1.0))
+        labeled_training_data.append((predicted_label, feature_vector))
+        if predicted_label == -1:
+            pseudo_label_error += 1
+
+    for convex in tobe_pseudo_labeled_normal:
+        feature_vector = [convex.r1, convex.r2, convex.r3]
+        predicted_label = algorithm_ssp.run(numpy.append(numpy.array(feature_vector), 1.0))
+        labeled_training_data.append((predicted_label, feature_vector))
+        if predicted_label == 1:
+            pseudo_label_error += 1
+    print "pseudo-label error = ", pseudo_label_error
+
+
+    """
+    re-train with new training data -> this is semi-supervised learning
+    """
+    algorithm_ssp.train(classified_feature_list=labeled_training_data)
+
+    """
+    predict with test data -> semi-supervised
+    """
+    error = 0
+    for convex in test_rhombus_convex:
+        feature_vector = numpy.array([convex.r1, convex.r2, convex.r3, 1.0])
+        predicted_label = algorithm_ssp.run(feature_vector)
+        if predicted_label == -1:  # it is miss-classified
+            error += 1
+
+    for convex in test_normal_convex:
+        feature_vector = numpy.array([convex.r1, convex.r2, convex.r3, 1.0])
+        predicted_label = algorithm_ssp.run(feature_vector)
+        if predicted_label == 1:  # it is miss-classified
+            error += 1
+
+    print "error ssp = ", error
 
 
 if __name__ == "__main__":
-    algorithm = PLAAlgorithm()
-    main(algorithm, 9, 900 - 9)
+    main(9, 900 - 9)

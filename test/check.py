@@ -34,11 +34,9 @@ def test_numpy_array():
 
 def test_python_dict():
     a = [1.3, 2.8, 3.0, 5]
-    b = a[:2]
-    print b
-
-    b = a[2:]
-    print b
+    b = [2.5, 5, 6.9]
+    c = a + b
+    print c
 
 
 def main():
