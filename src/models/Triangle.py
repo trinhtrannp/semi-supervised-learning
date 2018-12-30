@@ -1,7 +1,7 @@
-from plotly.utils import numpy
+import numpy
 
-from src.models import Angle
-from src.models import Line
+from src.models.Angle import Angle
+from src.models.Line import Line
 import math
 
 from src.utils import geometry

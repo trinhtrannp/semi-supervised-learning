@@ -1,5 +1,5 @@
-from src.models import Angle
-from src.models import Line
+from src.models.Angle import Angle
+from src.models.Line import Line
 import numpy
 from src.utils import geometry
 

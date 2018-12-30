@@ -1,6 +1,6 @@
 from src.algorithms.BaseAlgorithm import BaseAlgorithm
-from src.functions import SignumActivationFunction
-from src.models import SimplePerceptron
+from src.functions.activation import SignumActivationFunction
+from src.models.SimplePerceptron import SimplePerceptron
 import numpy
 
 

@@ -2,7 +2,7 @@ import itertools
 import random
 
 from src.models.Point import Point
-from src.models import Triangle
+from src.models.Triangle import Triangle
 
 
 class TriangleGenerator(object):

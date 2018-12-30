@@ -2,7 +2,7 @@ import itertools
 import random
 
 from src.models.Point import Point
-from src.models import Convex
+from src.models.Convex import Convex
 
 
 class ConvexGenerator(object):

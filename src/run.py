@@ -1,7 +1,7 @@
 import numpy
 
 from src.algorithms.perceptronbased import PLAAlgorithm
-from src.generators import ConvexGenerator
+from src.generators.ConvexGenerator import ConvexGenerator
 from src.utils import geometry as geo_utils
 
 
