@@ -6,7 +6,7 @@ class BaseActivationFunction(object):
 class SignumActivationFunction(BaseActivationFunction):
 
     def calc(self, input_value):
-        if input >= 0:
+        if input_value >= 0:
             return 1
         else:
             return -1

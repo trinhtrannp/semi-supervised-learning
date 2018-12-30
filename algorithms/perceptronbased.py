@@ -27,7 +27,7 @@ class PLAAlgorithm(BaseAlgorithm):
             for feature_point in self.classified_feature_list:
                 true_label = feature_point[0]
                 feature_vector = numpy.array(feature_point[1])
-                numpy.append(feature_vector, 1)
+                feature_vector = numpy.append(feature_vector, 1.0)
                 if self.weight is None:
                     self.init_weight(len(feature_vector))
 
@@ -35,6 +35,7 @@ class PLAAlgorithm(BaseAlgorithm):
                 if predict_label != true_label:
                     loss += 1
                     self.weight = numpy.add(self.weight, numpy.multiply(feature_vector, true_label))
+                    print "new weight: ", self.weight
 
             if loss == expected_loss:
                 break

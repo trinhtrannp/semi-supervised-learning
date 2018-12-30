@@ -33,16 +33,17 @@ def test_numpy_array():
 
 
 def test_python_dict():
-    a = list()
-    a.append(("haha", [1, 2, 3, 4, 5]))
-    a.append(("hehe", [1, 2, 3, 4, 6]))
+    a = [1.3, 2.8, 3.0, 5]
+    b = a[:2]
+    print b
 
-    print a[0][1]
-    print a[1]
+    b = a[2:]
+    print b
 
 
 def main():
-    a = math.acos(1.0)
+    test_python_dict()
+
 
 if __name__ == "__main__":
     main()
