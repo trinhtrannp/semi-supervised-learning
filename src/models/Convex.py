@@ -1,9 +1,7 @@
-from plotly.utils import numpy
-
-from models.Angle import Angle
-from models.Line import Line
-
-from utils import geometry
+from src.models import Angle
+from src.models import Line
+import numpy
+from src.utils import geometry
 
 
 class Convex(object):

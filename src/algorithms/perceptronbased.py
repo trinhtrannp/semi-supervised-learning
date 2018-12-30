@@ -1,8 +1,7 @@
-from plotly.utils import numpy
-
-from algorithms.BaseAlgorithm import BaseAlgorithm
-from functions.activation import SignumActivationFunction
-from models.SimplePerceptron import SimplePerceptron
+from src.algorithms.BaseAlgorithm import BaseAlgorithm
+from src.functions import SignumActivationFunction
+from src.models import SimplePerceptron
+import numpy
 
 
 class PLAAlgorithm(BaseAlgorithm):

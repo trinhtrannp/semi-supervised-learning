@@ -1,8 +1,8 @@
 import numpy
 
-from algorithms.perceptronbased import PLAAlgorithm
-from generators.ConvexGenerator import ConvexGenerator
-from utils import geometry as geo_utils
+from src.algorithms.perceptronbased import PLAAlgorithm
+from src.generators import ConvexGenerator
+from src.utils import geometry as geo_utils
 
 
 def generate_rhombus_convex(expected_number, sample_quantity, increase_step):

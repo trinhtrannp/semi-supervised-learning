@@ -1,10 +1,10 @@
 from plotly.utils import numpy
 
-from models.Angle import Angle
-from models.Line import Line
+from src.models import Angle
+from src.models import Line
 import math
 
-from utils import geometry
+from src.utils import geometry
 
 
 class Triangle(object):

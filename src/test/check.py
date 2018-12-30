@@ -1,11 +1,9 @@
-import math
 import random
 
 import matplotlib.pyplot as plt
 from plotly.utils import numpy
 
-from generators.TriangleGenerator import TriangleGenerator
-from models.Angle import Angle
+from src.generators import TriangleGenerator
 
 
 def test_triangle_generator():

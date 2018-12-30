@@ -1,4 +1,4 @@
-from plotly.utils import numpy
+import numpy
 
 
 class SimplePerceptron(object):

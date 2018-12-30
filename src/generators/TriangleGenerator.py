@@ -1,11 +1,11 @@
 import itertools
 import random
 
-from models.Point import Point
-from models.Convex import Convex
+from src.models.Point import Point
+from src.models import Triangle
 
 
-class ConvexGenerator(object):
+class TriangleGenerator(object):
 
     def __init__(self, X_lowerbound, X_uperbound, Y_lowerbound, Y_uperbound, X_resolution, Y_resolution):
         self.X_lowerbound = X_lowerbound
@@ -23,17 +23,21 @@ class ConvexGenerator(object):
             for y in range(self.Y_lowerbound, self.Y_uperbound, self.Y_resolution):
                 self.point_list.append(Point(x, y))
 
-    def generate_convex_list(self, quantity):
-        quadpoint_combinations = list(itertools.combinations(self.point_list, 4))
-        chosen_combinations = random.sample(quadpoint_combinations, quantity)
-        convex_list = list()
-        for quadpoint in chosen_combinations:
-            point1 = quadpoint[0]
-            point2 = quadpoint[1]
-            point3 = quadpoint[2]
-            point4 = quadpoint[3]
-            convex = Convex(point1, point2, point3, point4)
-            if convex.is_real_convex():
-                convex_list.append(convex)
+    def generate_triangle_list(self, quantity):
+        tripoint_combinations = list(itertools.combinations(self.point_list, 3))
+        chosen_combinations = random.sample(tripoint_combinations, quantity)
+        triangle_list = list()
+        for tripoint in chosen_combinations:
+            A = tripoint[0]
+            B = tripoint[1]
+            C = tripoint[2]
+            triangle = Triangle(A, B, C)
+            if triangle.is_real_triangle():
+                triangle_list.append(triangle)
 
-        return convex_list
+        return triangle_list
+
+
+
+
+
