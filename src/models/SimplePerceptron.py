@@ -11,4 +11,5 @@ class SimplePerceptron(object):
 
     def get_output(self, weight=None, feature_vector=None):
         value = numpy.dot(weight.T, feature_vector)
-        return self.activation_function.calc(input_value=value)
+        clazz = self.activation_function.calc(input_value=value)
+        return value, clazz

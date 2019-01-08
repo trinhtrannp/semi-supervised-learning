@@ -23,9 +23,10 @@ class ConvexGenerator(object):
             for y in range(self.Y_lowerbound, self.Y_uperbound, self.Y_resolution):
                 self.point_list.append(Point(x, y))
 
+        self.quadpoint_combinations = list(itertools.combinations(self.point_list, 4))
+
     def generate_convex_list(self, quantity):
-        quadpoint_combinations = list(itertools.combinations(self.point_list, 4))
-        chosen_combinations = random.sample(quadpoint_combinations, quantity)
+        chosen_combinations = random.sample(self.quadpoint_combinations, quantity)
         convex_list = list()
         for quadpoint in chosen_combinations:
             point1 = quadpoint[0]

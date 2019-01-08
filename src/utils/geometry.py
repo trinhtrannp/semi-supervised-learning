@@ -8,7 +8,7 @@ def is_isosceles_triangle(triangle):
 
 
 def is_rhombus_convex(convex):
-    tolerance = 0.2
+    tolerance = 0.1
     if abs(convex.ab - convex.bc) > tolerance:
         return False
 

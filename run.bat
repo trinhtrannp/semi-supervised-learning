@@ -1,0 +1,8 @@
+set BASE_DIR=%~dp0
+set SRC_DIR=%BASE_DIR%\src
+set VIRTUAL_ENV=%BASE_DIR%\venv_windows\
+set PYTHON_DIR=%VIRTUAL_ENV%\Scripts\
+set PATH=%BASE_DIR%;%VIRTUAL_ENV%;%PYTHON_DIR%;%PATH%
+set PYTHONPATH=%BASE_DIR%;%SRC_DIR%
+set MAIN_FILE=%SRC_DIR%\run.py
+START python.exe %MAIN_FILE%
