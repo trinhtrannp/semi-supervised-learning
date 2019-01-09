@@ -1,6 +1,7 @@
 from src.algorithms.BaseAlgorithm import BaseAlgorithm
 from src.functions.activation import SignumActivationFunction
 from src.models.SimplePerceptron import SimplePerceptron
+from random import shuffle
 import numpy
 
 
@@ -16,11 +17,11 @@ class PLAAlgorithm(BaseAlgorithm):
             self.weight = numpy.add(self.weight, 0.01)
 
     def train(self, classified_feature_list, expected_loss=0):
-        self.classified_feature_list = classified_feature_list
+        random_mixed_classified_feature_list = shuffle(classified_feature_list)
         while True:
             loss = 0
             """TODO: randomly choose from classified feature list"""
-            for feature_point in self.classified_feature_list:
+            for feature_point in random_mixed_classified_feature_list:
                 true_label = feature_point[0]
                 feature_vector = numpy.append(numpy.array(feature_point[1]), 1.0)
                 if self.weight is None:
