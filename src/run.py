@@ -1,4 +1,5 @@
 import numpy
+import matplotlib.pyplot as plt
 
 from src.algorithms.perceptronbased import PLAAlgorithm
 from src.generators.ConvexGenerator import ConvexGenerator
@@ -53,10 +54,10 @@ def get_labeled_training_data(tobe_labeled_rhombus, tobe_labeled_normal):
 
 
 def main(rhombus, normal):
-    print "Trying to generate ", rhombus, " rhombus convex..."
+    #print "Trying to generate ", rhombus, " rhombus convex..."
     rhombus_convex = generate_rhombus_convex(rhombus, 10000, 1000)
 
-    print "Trying to generate ", normal, " normal convex..."
+    #print "Trying to generate ", normal, " normal convex..."
     normal_convex = generate_normal_convex(normal, 10000, 1000)
 
     """
@@ -64,12 +65,12 @@ def main(rhombus, normal):
     one-third will be used as training data
     two-third will be used as test data
     """
-    training_rhombus_convex = rhombus_convex[:len(rhombus_convex) // 3]
-    test_rhombus_convex = rhombus_convex[len(rhombus_convex) // 3:]
+    training_rhombus_convex = rhombus_convex[:int((len(rhombus_convex) * 0.2))]
+    test_rhombus_convex = rhombus_convex[int((len(rhombus_convex) * 0.8)):]
     del rhombus_convex[:]
 
-    training_normal_convex = normal_convex[:len(normal_convex) // 3]
-    test_normal_convex = normal_convex[len(normal_convex) // 3:]
+    training_normal_convex = normal_convex[:int((len(normal_convex) * 0.01))]
+    test_normal_convex = normal_convex[int((len(normal_convex) * 0.99)):]
     del normal_convex[:]
 
     """
@@ -80,8 +81,8 @@ def main(rhombus, normal):
     tobe_pseudo_labeled_rhombus = training_rhombus_convex[int((len(training_rhombus_convex)*0.5)):]
     del training_rhombus_convex[:]
 
-    tobe_labeled_normal = training_normal_convex[:int((len(training_normal_convex)*0.5))]
-    tobe_pseudo_labeled_normal = training_normal_convex[int((len(training_normal_convex)*0.5)):]
+    tobe_labeled_normal = training_normal_convex[:int((len(training_normal_convex)*0.1))]
+    tobe_pseudo_labeled_normal = training_normal_convex[int((len(training_normal_convex)*0.9)):]
     del training_normal_convex[:]
 
     ############################# Supervised Learning #####################################
@@ -92,7 +93,12 @@ def main(rhombus, normal):
     train with all training data -> this is supervised learning
     """
     labeled_training_data = get_labeled_training_data(tobe_labeled_rhombus, tobe_labeled_normal)
-    algorithm_sp.train(classified_feature_list=labeled_training_data)
+    loss_record = algorithm_sp.train(classified_feature_list=labeled_training_data)
+    # plt.figure(1)
+    # plt.xlabel('iterations')
+    # plt.ylabel('#of miss-classified')
+    # plt.plot(list(range(0, len(loss_record))), loss_record, '*-')
+    # plt.show()
 
     """
     predict with test data -> supervised learning
@@ -110,7 +116,7 @@ def main(rhombus, normal):
         if predicted_label == 1:  # it is miss-classified
             error += 1
 
-    print "error sp = ", error
+    sp_error = error
 
     ###################################  Semi-supervised Learning  ##########################################
 
@@ -120,45 +126,54 @@ def main(rhombus, normal):
     train with labeled training data
     """
     labeled_training_data = get_labeled_training_data(tobe_labeled_rhombus, tobe_labeled_normal)
-    algorithm_ssp.train(classified_feature_list=labeled_training_data)
+    loss_record = algorithm_ssp.train(classified_feature_list=labeled_training_data)
 
     """
     pseudo-label remaining training data
     """
     pseudo_label_error = 0
-    pseudo_label_data = list()
+    pseudo_rhombus_data = list()
     for convex in tobe_pseudo_labeled_rhombus:
         feature_vector = [convex.r1, convex.r2, convex.r3]
         value, predicted_label = algorithm_ssp.run(numpy.append(numpy.array(feature_vector), 1.0))
-        pseudo_label_data.append((value, feature_vector))
+        pseudo_rhombus_data.append((value, feature_vector))
         if predicted_label == -1:
             pseudo_label_error += 1
 
-    pseudo_label_data.sort(key=lambda item: item[0], reverse=True)
-    for item in pseudo_label_data[:int(len(tobe_pseudo_labeled_rhombus)*0.5)]:
-        labeled_training_data.append((1, item[1]))
-    del pseudo_label_data[:]
+    pseudo_rhombus_data.sort(key=lambda item: item[0], reverse=True)
 
+    pseudo_normal_data = list()
     for convex in tobe_pseudo_labeled_normal:
         feature_vector = [convex.r1, convex.r2, convex.r3]
         value, predicted_label = algorithm_ssp.run(numpy.append(numpy.array(feature_vector), 1.0))
-        pseudo_label_data.append((value, feature_vector))
+        pseudo_normal_data.append((value, feature_vector))
         if predicted_label == 1:
             pseudo_label_error += 1
 
-    pseudo_label_data.sort(key=lambda item: item[0])
-    for item in pseudo_label_data[:int(len(tobe_pseudo_labeled_normal)*0.5)]:
-        labeled_training_data.append((-1, item[1]))
-    del pseudo_label_data[:]
+    pseudo_normal_data.sort(key=lambda item: item[0])
 
-    print "pseudo-label error = ", pseudo_label_error
+    pseudo_rhombus_data = pseudo_rhombus_data[:int(len(pseudo_rhombus_data) * 1.0)]
+    pseudo_normal_data = pseudo_normal_data[:int(len(pseudo_normal_data) * 1.0)]
+    for i in range(0, max(len(pseudo_rhombus_data), len(pseudo_normal_data))):
+        if len(pseudo_normal_data) > i:
+            labeled_training_data.append((-1, pseudo_normal_data[i][1]))
+
+        if len(pseudo_rhombus_data) > i:
+            labeled_training_data.append((1, pseudo_rhombus_data[i][1]))
+
+    #print "pseudo-label error = ", pseudo_label_error
 
 
     """
     re-train with new training data -> this is semi-supervised learning
     """
     algorithm_ssp = PLAAlgorithm()
-    algorithm_ssp.train(classified_feature_list=labeled_training_data)
+    loss_record = algorithm_ssp.train(classified_feature_list=labeled_training_data)
+    # plt.figure(2)
+    # plt.xlabel('iterations')
+    # plt.ylabel('#of miss-classified')
+    # plt.plot(list(range(0, len(loss_record))), loss_record, '*-')
+    # plt.show()
 
     """
     predict with test data -> semi-supervised
@@ -176,7 +191,9 @@ def main(rhombus, normal):
         if predicted_label == 1:  # it is miss-classified
             error += 1
 
-    print "error ssp = ", error
+    ssp_error = error
+
+    return sp_error, ssp_error
 
 
 def predict_with_data(model, data_set, expected_label):
@@ -193,4 +210,29 @@ def predict_with_data(model, data_set, expected_label):
 
 
 if __name__ == "__main__":
-    main(18, 10000 - 18)
+    sp_errors = []
+    ssp_errors = []
+    for i in range(0, 20):
+        print i
+        sp_error, ssp_error = main(30, 10000 - 30)
+        sp_errors.append(sp_error)
+        ssp_errors.append(ssp_error)
+        print ""
+
+    sp_errors = numpy.array(sp_errors)
+    sp_errors_mean = [sp_errors.mean()]*len(sp_errors)
+
+    ssp_errors = numpy.array(ssp_errors)
+    ssp_errors_mean = [ssp_errors.mean()]*len(ssp_errors)
+
+    plt.figure(1)
+    plt.xlabel('#of try')
+    plt.ylabel('#of miss-classified')
+    plt.plot(list(range(0, len(sp_errors))), sp_errors, 'r*-',
+             list(range(0, len(ssp_errors))), ssp_errors, '*-',
+             list(range(0, len(sp_errors))), sp_errors_mean, 'r--',
+             list(range(0, len(ssp_errors))), ssp_errors_mean, '--',
+             )
+    plt.legend(("SL", "SSL"))
+
+    plt.show()

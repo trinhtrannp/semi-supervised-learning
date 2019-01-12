@@ -17,11 +17,12 @@ class PLAAlgorithm(BaseAlgorithm):
             self.weight = numpy.add(self.weight, 0.01)
 
     def train(self, classified_feature_list, expected_loss=0):
-        random_mixed_classified_feature_list = shuffle(classified_feature_list)
+        #random_mixed_classified_feature_list = shuffle(classified_feature_list)
+        loss_record = list()
         while True:
             loss = 0
             """TODO: randomly choose from classified feature list"""
-            for feature_point in random_mixed_classified_feature_list:
+            for feature_point in classified_feature_list:
                 true_label = feature_point[0]
                 feature_vector = numpy.append(numpy.array(feature_point[1]), 1.0)
                 if self.weight is None:
@@ -32,8 +33,11 @@ class PLAAlgorithm(BaseAlgorithm):
                     loss += 1
                     self.weight = numpy.add(self.weight, numpy.multiply(feature_vector, true_label))
 
+            loss_record.append(loss)
             if loss <= expected_loss:
                 break
+
+        return loss_record
 
     def run(self, feature_vector):
         """
