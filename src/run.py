@@ -53,11 +53,11 @@ def get_labeled_training_data(tobe_labeled_rhombus, tobe_labeled_normal):
     return labeled_training_data
 
 
-def main(rhombus, normal):
-    #print "Trying to generate ", rhombus, " rhombus convex..."
+def main(rhombus, normal, percent_label):
+    # print "Trying to generate ", rhombus, " rhombus convex..."
     rhombus_convex = generate_rhombus_convex(rhombus, 10000, 1000)
 
-    #print "Trying to generate ", normal, " normal convex..."
+    # print "Trying to generate ", normal, " normal convex..."
     normal_convex = generate_normal_convex(normal, 10000, 1000)
 
     """
@@ -77,12 +77,12 @@ def main(rhombus, normal):
     take one-third training data to label
     the remaining two-third will be pseudo-labeled
     """
-    tobe_labeled_rhombus = training_rhombus_convex[:int((len(training_rhombus_convex)*0.5))]
-    tobe_pseudo_labeled_rhombus = training_rhombus_convex[int((len(training_rhombus_convex)*0.5)):]
+    tobe_labeled_rhombus = training_rhombus_convex[:int((len(training_rhombus_convex) * 0.5))]
+    tobe_pseudo_labeled_rhombus = training_rhombus_convex[int((len(training_rhombus_convex) * 0.5)):]
     del training_rhombus_convex[:]
 
-    tobe_labeled_normal = training_normal_convex[:int((len(training_normal_convex)*0.1))]
-    tobe_pseudo_labeled_normal = training_normal_convex[int((len(training_normal_convex)*0.9)):]
+    tobe_labeled_normal = training_normal_convex[:int((len(training_normal_convex) * percent_label))]
+    tobe_pseudo_labeled_normal = training_normal_convex[int((len(training_normal_convex) * (1.0 - percent_label))):]
     del training_normal_convex[:]
 
     ############################# Supervised Learning #####################################
@@ -161,8 +161,7 @@ def main(rhombus, normal):
         if len(pseudo_rhombus_data) > i:
             labeled_training_data.append((1, pseudo_rhombus_data[i][1]))
 
-    #print "pseudo-label error = ", pseudo_label_error
-
+    # print "pseudo-label error = ", pseudo_label_error
 
     """
     re-train with new training data -> this is semi-supervised learning
@@ -210,29 +209,32 @@ def predict_with_data(model, data_set, expected_label):
 
 
 if __name__ == "__main__":
-    sp_errors = []
-    ssp_errors = []
-    for i in range(0, 20):
-        print i
-        sp_error, ssp_error = main(30, 10000 - 30)
-        sp_errors.append(sp_error)
-        ssp_errors.append(ssp_error)
-        print ""
 
-    sp_errors = numpy.array(sp_errors)
-    sp_errors_mean = [sp_errors.mean()]*len(sp_errors)
+    for percent in [0.4, 0.5]:
+        sp_errors = numpy.array([])
+        ssp_errors = numpy.array([])
+        for i in range(0, 20):
+            sp_error, ssp_error = main(30, 10000 - 30, percent_label=percent)
+            sp_errors = numpy.append(sp_errors, sp_error)
+            ssp_errors = numpy.append(ssp_errors, ssp_error)
 
-    ssp_errors = numpy.array(ssp_errors)
-    ssp_errors_mean = [ssp_errors.mean()]*len(ssp_errors)
+        print "percent labeled: ", percent * 100, "%: SL - ", sp_errors.mean(), " | SSL - ", ssp_errors.mean()
 
-    plt.figure(1)
-    plt.xlabel('#of try')
-    plt.ylabel('#of miss-classified')
-    plt.plot(list(range(0, len(sp_errors))), sp_errors, 'r*-',
-             list(range(0, len(ssp_errors))), ssp_errors, '*-',
-             list(range(0, len(sp_errors))), sp_errors_mean, 'r--',
-             list(range(0, len(ssp_errors))), ssp_errors_mean, '--',
-             )
-    plt.legend(("SL", "SSL"))
+    # for i in range(0, 20):
+    #     print i
+    #     sp_error, ssp_error = main(30, 10000 - 30)
+    #     sp_errors.append(sp_error)
+    #     ssp_errors.append(ssp_error)
+    #     print ""
 
-    plt.show()
+    # plt.figure(1)
+    # plt.xlabel('#of try')
+    # plt.ylabel('#of miss-classified')
+    # plt.plot(list(range(0, len(sp_errors))), sp_errors, 'r*-',
+    #          list(range(0, len(ssp_errors))), ssp_errors, '*-',
+    #          list(range(0, len(sp_errors))), sp_errors_mean, 'r--',
+    #          list(range(0, len(ssp_errors))), ssp_errors_mean, '--',
+    #          )
+    # plt.legend(("SL", "SSL"))
+    #
+    # plt.show()
